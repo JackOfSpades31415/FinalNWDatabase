@@ -223,5 +223,16 @@ namespace NWConsole.Model
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+
+        public void AddCategory(Category category){
+            this.Categories.Add(category);
+            this.SaveChanges();
+        }
+        public void AddProduct(Product product){
+            this.Products.Add(product);
+            this.SaveChanges();
     }
+    }
+
+    
 }

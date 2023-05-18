@@ -21,8 +21,9 @@ try
     {
         Console.WriteLine("1) Display Categories");
         Console.WriteLine("2) Add Category");
-         Console.WriteLine("3) Display Category and related products");
-         Console.WriteLine("4) Display all Categories and their related products");
+        Console.WriteLine("3) Display Category and related products");
+        Console.WriteLine("4) Display all Categories and their related products");
+        Console.WriteLine("5) Add a new Product.");
         Console.WriteLine("\"q\" to quit");
         choice = Console.ReadLine();
         Console.Clear();
@@ -63,7 +64,8 @@ try
                 else
                 {
                     logger.Info("Validation passed");
-                    // TODO: save category to db
+                    db.AddCategory(category);
+                    logger.Info("Category added - {name}", category.CategoryName);
                 }
             }
             if (!isValid)
@@ -110,10 +112,37 @@ try
                 }
             }
         }
-        Console.WriteLine();
+        else if (choice == "5")
+        {
+            Product product = new Product();
+            Console.WriteLine("Enter Category Name:");
+            product.ProductName = Console.ReadLine();
+            Console.WriteLine("Enter the Category Description:");
+            product.QuantityPerUnit = Console.ReadLine();
+            ValidationContext context = new ValidationContext(product, null, null);
+            List<ValidationResult> results = new List<ValidationResult>();
 
-    } while (choice.ToLower() != "q");
+            var isValid = Validator.TryValidateObject(product, context, results, true);
+            if (isValid)
+            {
+                // check for unique name
+                if (db.Products.Any(p => p.ProductName == product.ProductName))
+                {
+                    // generate validation error
+                    isValid = false;
+                    results.Add(new ValidationResult("Name exists", new string[] { "ProductName" }));
+                }
+                else
+                {
+                    logger.Info("Validation passed");
+                    db.AddProduct(product);
+                }
+        }
+        Console.WriteLine();
+        } 
+}while (choice.ToLower() != "q");
 }
+
 catch (Exception ex)
 {
     logger.Error(ex.Message);
