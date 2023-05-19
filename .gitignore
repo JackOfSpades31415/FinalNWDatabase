@@ -2,3 +2,6 @@
 bin
 obj
 appsettings.json
+Create_Database.sql
+Create_Tables.sql
+Populate_Tables.sql

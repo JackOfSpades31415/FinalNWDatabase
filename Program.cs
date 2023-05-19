@@ -115,10 +115,40 @@ try
         else if (choice == "5")
         {
             Product product = new Product();
-            Console.WriteLine("Enter Category Name:");
+            Console.WriteLine("Select Category for Product:");
+            var category = GetCategory(db, logger);
+            if(category != null){
+            product.Category = category;
+            product.CategoryId = category.CategoryId;
+            Console.WriteLine("Select Supplier of Product:");
+                var supplier = GetSupplier(db, logger);
+                if(supplier != null){
+            product.Supplier = supplier;
+            product.SupplierId = supplier.SupplierId;
+            Console.WriteLine("Enter Product Name:");
             product.ProductName = Console.ReadLine();
-            Console.WriteLine("Enter the Category Description:");
+            Console.WriteLine("Enter quantity per unit:");
             product.QuantityPerUnit = Console.ReadLine();
+            Console.WriteLine("Enter Unit Price:");
+            product.UnitPrice = Convert.ToDecimal(Console.ReadLine());
+            Console.WriteLine("Enter current Stock:");
+            product.UnitsInStock = Convert.ToInt16(Console.ReadLine());
+            Console.WriteLine("Enter Units on Order:");
+            product.UnitsOnOrder = Convert.ToInt16(Console.ReadLine());
+            Console.WriteLine("Enter Reorder Level:");
+            product.ReorderLevel = Convert.ToInt16(Console.ReadLine());
+            Console.WriteLine("Is this Discontinued? (y/n):");
+            var discAnswer = Console.ReadLine();
+            if (discAnswer == "y"){
+                product.Discontinued = true;
+            }
+            else if (discAnswer == "n"){
+                product.Discontinued = false;
+            }
+            else{
+                logger.Error("Input is invalid");
+            }
+
             ValidationContext context = new ValidationContext(product, null, null);
             List<ValidationResult> results = new List<ValidationResult>();
 
@@ -137,9 +167,14 @@ try
                     logger.Info("Validation passed");
                     db.AddProduct(product);
                 }
+            
         }
-        Console.WriteLine();
+                }
+            }
+      
         } 
+
+          Console.WriteLine();
 }while (choice.ToLower() != "q");
 }
 
@@ -149,3 +184,42 @@ catch (Exception ex)
 }
 
 logger.Info("Program ended");
+
+static Category GetCategory(NWContext db, Logger logger)
+{
+    // display all categories
+    var categories = db.Categories.OrderBy(b => b.CategoryId);
+    foreach (Category c in categories)
+    {
+        Console.WriteLine($"{c.CategoryId}: {c.CategoryName}");
+    }
+    if (int.TryParse(Console.ReadLine(), out int BlogId))
+    {
+        Category category = db.Categories.FirstOrDefault(c => c.CategoryId == BlogId);
+        if (category != null)
+        {
+            return category;
+        }
+    }
+    logger.Error("Invalid Category ID");
+    return null;
+}
+static Supplier GetSupplier(NWContext db, Logger logger)
+{
+    // display all suppliers
+    var suppliers = db.Suppliers.OrderBy(b => b.SupplierId);
+    foreach (Supplier s in suppliers)
+    {
+        Console.WriteLine($"{s.SupplierId}: {s.SupplierId}");
+    }
+    if (int.TryParse(Console.ReadLine(), out int SupplierId))
+    {
+        Supplier supplier = db.Suppliers.FirstOrDefault(c => c.SupplierId == SupplierId);
+        if (supplier != null)
+        {
+            return supplier;
+        }
+    }
+    logger.Error("Invalid Supplier ID");
+    return null;
+}
