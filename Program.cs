@@ -269,7 +269,7 @@ static Supplier GetSupplier(NWContext db, Logger logger)
     var suppliers = db.Suppliers.OrderBy(b => b.SupplierId);
     foreach (Supplier s in suppliers)
     {
-        Console.WriteLine($"{s.SupplierId}: {s.SupplierId}");
+        Console.WriteLine($"{s.SupplierId}: {s.CompanyName}");
     }
     if (int.TryParse(Console.ReadLine(), out int SupplierId))
     {
@@ -294,7 +294,7 @@ static Product GetProduct(NWContext db, Logger logger)
         Supplier supplier = db.Suppliers.FirstOrDefault(s => s.SupplierId == product.SupplierId);
         if (product != null)
         {
-            Console.WriteLine($"Product ID: {product.ProductId}\nProduct: {product.ProductName}\nCategory: {category.CategoryName}\nCategory ID: {product.CategoryId}\nSupplier: {supplier.CompanyName}\nSupplier ID: {product.SupplierId}\nPrice: {product.UnitPrice}\nStock {product.UnitsInStock}\nOn Order:{product.UnitsOnOrder}\nDiscontinued: {product.Discontinued}");
+            Console.WriteLine($"Product ID: {product.ProductId}\nProduct: {product.ProductName}\nCategory: {category.CategoryName}\nCategory ID: {product.CategoryId}\nSupplier: {supplier.CompanyName}\nSupplier ID: {product.SupplierId}\nQuantity per Unit: {product.QuantityPerUnit}\nPrice: {product.UnitPrice}\nStock {product.UnitsInStock}\nOn Order:{product.UnitsOnOrder}\nDiscontinued: {product.Discontinued}");
             return product;
         }
     }
